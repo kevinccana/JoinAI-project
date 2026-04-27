@@ -1,35 +1,71 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import ChatPage from './pages/ChatPage';
+import MoodLogPage from './pages/MoodLogPage';
+import ResourcesPage from './pages/ResourcesPage';
+import SettingsPage from './pages/SettingsPage';
+import './styles/global.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState('chat');
+
+  const renderPage = () => {
+    switch(currentPage) {
+      case 'chat':
+        return <ChatPage />;
+      case 'mood':
+        return <MoodLogPage />;
+      case 'resources':
+        return <ResourcesPage />;
+      case 'settings':
+        return <SettingsPage />;
+      default:
+        return <ChatPage />;
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <div className="sidebar">
+        <div className="logo-area">
+          <div className="logo">🧠</div>
+          <h2>JoinAI</h2>
+          <span className="tagline">acompañamiento emocional</span>
+        </div>
+        
+        <nav className="menu">
+          <button 
+            className={`menu-item ${currentPage === 'chat' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('chat')}
+          >
+            💬 Nuevo Chat
+          </button>
+          <button className="menu-item disabled">📜 Historial</button>
+          <button 
+            className={`menu-item ${currentPage === 'mood' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('mood')}
+          >
+            📊 Registro de Ánimo
+          </button>
+          <button 
+            className={`menu-item ${currentPage === 'resources' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('resources')}
+          >
+            📍 Recursos
+          </button>
+          <button 
+            className={`menu-item ${currentPage === 'settings' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('settings')}
+          >
+            ⚙️ Ajustes
+          </button>
+        </nav>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      
+      <div className="main-content">
+        {renderPage()}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
