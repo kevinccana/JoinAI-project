@@ -1,36 +1,28 @@
 from fastapi import APIRouter
-from model.chat import ChatRequest, ChatResponse
-from app.services.nlp import detectar_crisis, detectar_emocion
-from app.M04_GestorRecursos import ResourceManager
+from app.models.chat import ChatRequest, ChatResponse
 
-router = APIRouter()
+router = APIRouter(prefix="/chat", tags=["Chat"])
 
-manager = ResourceManager()
-
-@router.post("/chat", response_model=ChatResponse)
+@router.post("/")
 def chat(req: ChatRequest):
+    texto = req.message.lower()
 
-    mensaje = req.message
-
-    #crisis
-    if detectar_crisis(mensaje):
+    if "triste" in texto:
         return ChatResponse(
-            response="No estás solo. Llama a la Línea 113 opción 5 o busca ayuda inmediata."
+            response="Lamento que te sientas así. ¿Quieres contarme más?",
+            emotion="tristeza",
+            crisis=False
         )
 
-    # recursos
-    recursos = manager.buscar_por_distrito(mensaje)
-    if recursos:
+    if "suicidio" in texto:
         return ChatResponse(
-            response=f"Encontré estos recursos cercanos: {recursos}"
+            response="No estás solo. Busca ayuda inmediata.",
+            emotion="crisis",
+            crisis=True
         )
 
-    # emoción
-    emocion = detectar_emocion(mensaje)
-    if emocion:
-        return ChatResponse(response=emocion)
-
-    # predeterminado
     return ChatResponse(
-        response="Estoy aquí para escucharte. ¿Quieres contarme más?"
+        response="Estoy aquí para escucharte.",
+        emotion="neutral",
+        crisis=False
     )

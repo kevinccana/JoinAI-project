@@ -1,12 +1,7 @@
-from fastapi import FastAPI
-from app.routes import chat, crisis, recursos
+from fastapi import APIRouter
 
-app = FastAPI(title="JoinAI API")
+router = APIRouter()
 
-app.include_router(chat.router)
-app.include_router(crisis.router)
-app.include_router(recursos.router)
-
-@app.get("/health")
+@router.get("/health")
 def health():
     return {"status": "ok"}
