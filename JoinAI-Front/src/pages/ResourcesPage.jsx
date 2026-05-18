@@ -1,56 +1,199 @@
-import React, { useState, useEffect } from 'react';
-import { checkHealth } from '../services/api';
+import React, { useState } from 'react';
 
 function ResourcesPage() {
-  const [backendStatus, setBackendStatus] = useState('verificando');
+  const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    const checkBackend = async () => {
-      const result = await checkHealth();
-      setBackendStatus(result.status === 'ok' ? 'conectado' : 'desconectado');
-    };
-    checkBackend();
-  }, []);
+  // Datos de recursos
+  const videosCalma = [
+    {
+      id: 1,
+      titulo: "Ejercicio de Respiración 4-7-8",
+      descripcion: "Técnica de respiración para calmar la ansiedad",
+      url: "https://www.youtube.com/watch?v=EGO5m_DBzF8&t=96s",
+      tipo: "youtube"
+    },
+    {
+      id: 2,
+      titulo: "Mindfulness para principiantes",
+      descripcion: "5 minutos de atención plena",
+      url: "https://www.youtube.com/watch?v=3oCC4NDgYrY&t=17s",
+      tipo: "youtube"
+    },
+    {
+      id: 3,
+      titulo: "Meditación para dormir",
+      descripcion: "Relajación profunda para conciliar el sueño",
+      url: "https://www.youtube.com/watch?v=vFrHhwCOaW0",
+      tipo: "youtube"
+    }
+  ];
+
+  const articulosApoyo = [
+    {
+      id: 4,
+      titulo: "Cómo superar el pánico",
+      descripcion: "Estrategias para manejar ataques de ansiedad",
+      tipo: "articulo"
+    },
+    {
+      id: 5,
+      titulo: "Reminiscencia: entender el pasado",
+      descripcion: "Terapia para procesar emociones",
+      tipo: "articulo"
+    },
+    {
+      id: 6,
+      titulo: "Líneas de ayuda en Perú",
+      descripcion: "Contactos gratuitos de apoyo emocional",
+      tipo: "linea"
+    }
+  ];
+
+  const ejerciciosRespiración = [
+    {
+      id: 7,
+      titulo: "Música Relajante",
+      descripcion: "Playlist para calmar la mente",
+      url: "https://open.spotify.com/embed/playlist/37i9dQZF1DX3Ogo9pFvBkY",
+      tipo: "spotify"
+    },
+    {
+      id: 8,
+      titulo: "Sonidos de la naturaleza",
+      descripcion: "Ambientes para meditar",
+      url: "https://www.youtube.com/watch?v=7Ilu033ydSw",
+      tipo: "youtube"
+    }
+  ];
+
+  // Filtrar recursos según búsqueda
+  const filtrarPorBusqueda = (items) => {
+    if (!searchTerm) return items;
+    return items.filter(item =>
+      item.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
 
   return (
-    <div className="page-container">
-      <h2 className="page-title">📍 Recursos de Salud Mental</h2>
-      
-      <div className="resources-list">
-        <div className="resource-card">
-          <h4>🏥 Línea 113 - Salud Mental</h4>
-          <p>📞 Llama al <strong>113</strong> y pide la opción 5</p>
-          <p>🕒 Disponible 24/7 | Gratuito</p>
-        </div>
-        
-        <div className="resource-card">
-          <h4>💚 Línea Esperanza</h4>
-          <p>📞 <strong>0800-123-123</strong></p>
-          <p>🕒 24/7 | Prevención del suicidio</p>
-        </div>
-        
-        <div className="resource-card">
-          <h4>📍 CSMC San Juan de Lurigancho</h4>
-          <p>Av. Fernando Wiesse 1234, SJL</p>
-          <p>📞 01 123456 | Lun a Vie 8am-4pm</p>
-        </div>
+    <div className="resources-page">
+      {/* Header con título */}
+      <div className="resources-header">
+        <h2 className="resources-title">Recursos de Apoyo</h2>
+        <p className="resources-subtitle">Encuentra herramientas para tu bienestar emocional</p>
+      </div>
 
-        <div className="resource-card">
-          <h4>📍 CSMC Comas</h4>
-          <p>Av. Túpac Amaru Km 12, Comas</p>
-          <p>📞 01 789012 | Lun a Vie 8am-4pm</p>
-        </div>
-
-        <div className="resource-card">
-          <h4>📍 Hospital Dos de Mayo</h4>
-          <p>Av. Miguel Grau 13, Cercado de Lima</p>
-          <p>📞 01 456789 | Emergencias 24h</p>
+      {/* Buscador */}
+      <div className="search-container">
+        <div className="search-box">
+          <span className="search-icon">🔍</span>
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Buscar recursos..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {searchTerm && (
+            <button className="search-clear" onClick={() => setSearchTerm('')}>
+              ✕
+            </button>
+          )}
         </div>
       </div>
-      
-      <div className="backend-status" style={{ marginTop: 30, fontSize: 12, color: 'var(--text-gray)' }}>
-        Estado del servidor: {backendStatus === 'conectado' ? '🟢 Conectado' : backendStatus === 'desconectado' ? '🔴 Desconectado' : '🟡 Verificando...'}
-      </div>
+
+      {/* Sección: Videos de Calma */}
+      <section className="resources-section">
+        <div className="section-header">
+          <span className="section-icon">🎬</span>
+          <h3 className="section-title">Videos de Calma</h3>
+        </div>
+        <div className="resources-grid">
+          {filtrarPorBusqueda(videosCalma).map(video => (
+            <div key={video.id} className="resource-card video-card">
+              <div className="resource-icon">🎥</div>
+              <div className="resource-info">
+                <h4 className="resource-title">{video.titulo}</h4>
+                <p className="resource-description">{video.descripcion}</p>
+                <button 
+                  className="resource-button"
+                  onClick={() => window.open(video.url, '_blank')}
+                >
+                  Ver video →
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Sección: Artículos de Apoyo */}
+      <section className="resources-section">
+        <div className="section-header">
+          <span className="section-icon">📄</span>
+          <h3 className="section-title">Artículos de Apoyo</h3>
+        </div>
+        <div className="resources-list">
+          {filtrarPorBusqueda(articulosApoyo).map(articulo => (
+            <div key={articulo.id} className="resource-list-item">
+              <div className="list-item-icon">
+                {articulo.tipo === 'linea' ? '📞' : '📖'}
+              </div>
+              <div className="list-item-info">
+                <h4 className="list-item-title">{articulo.titulo}</h4>
+                <p className="list-item-description">{articulo.descripcion}</p>
+              </div>
+              <button className="list-item-button">
+                Leer más →
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Sección: Ejercicios de Respiración */}
+      <section className="resources-section">
+        <div className="section-header">
+          <span className="section-icon">🧘</span>
+          <h3 className="section-title">Ejercicios de Respiración</h3>
+        </div>
+        <div className="resources-grid">
+          {filtrarPorBusqueda(ejerciciosRespiración).map(ejercicio => (
+            <div key={ejercicio.id} className="resource-card">
+              <div className="resource-icon">
+                {ejercicio.tipo === 'spotify' ? '🎵' : '🧘'}
+              </div>
+              <div className="resource-info">
+                <h4 className="resource-title">{ejercicio.titulo}</h4>
+                <p className="resource-description">{ejercicio.descripcion}</p>
+                <button 
+                  className="resource-button"
+                  onClick={() => window.open(ejercicio.url, '_blank')}
+                >
+                  Reproducir →
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Líneas de ayuda (destacado) */}
+      <section className="help-section">
+        <div className="help-card">
+          <div className="help-icon">🆘</div>
+          <div className="help-content">
+            <h3 className="help-title">¿Necesitas hablar con alguien ahora?</h3>
+            <p className="help-description">
+              Línea gratuita disponible 24/7. Profesionales capacitados para escucharte.
+            </p>
+            <div className="help-contact" onClick={() => window.location.href = 'tel:113'}>
+              <span className="help-number">📞 Línea 113 - Opción 5</span>
+              <span className="help-arrow">→</span>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

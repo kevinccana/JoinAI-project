@@ -460,3 +460,598 @@ body {
   background: rgba(255,255,255,0.2);
   border-radius: 3px;
 }
+
+/* Crisis Overlay - Estilo similar a la imagen */
+.crisis-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.crisis-card {
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+  border-radius: 20px;
+  width: 500px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Header */
+.crisis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sos-icon {
+  font-size: 24px;
+}
+
+.crisis-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+}
+
+.close-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Mensaje introductorio */
+.intro-message {
+  padding: 16px 20px 8px 20px;
+  margin: 0;
+  color: #e0e0e0;
+  font-size: 14px;
+  line-height: 1.5;
+  background: rgba(74, 144, 226, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Video container */
+.video-container {
+  position: relative;
+  width: 100%;
+  background: #000;
+}
+
+.video-container iframe {
+  display: block;
+  width: 100%;
+  height: 280px;
+  border: none;
+}
+
+/* Información del video (estilo YouTube) */
+.video-info {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.video-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 6px;
+}
+
+.video-icon {
+  font-size: 16px;
+}
+
+.video-channel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 12px;
+}
+
+.channel-icon {
+  font-size: 14px;
+}
+
+.video-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.action-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.live-badge {
+  background: #FF4444;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Video controls */
+.video-controls {
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.skip-button {
+  background: transparent;
+  border: 1px solid #4A90E2;
+  color: #4A90E2;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.skip-button:hover {
+  background: #4A90E2;
+  color: white;
+}
+
+/* Footer */
+.crisis-footer {
+  padding: 12px 20px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11px;
+  color: #666;
+}
+
+/* Números de emergencia (pantalla 2) */
+.numbers-card {
+  max-width: 400px;
+}
+
+.crisis-content {
+  padding: 20px;
+}
+
+.crisis-message {
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 24px;
+  color: #e0e0e0;
+}
+
+.crisis-contact {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.crisis-contact:hover {
+  background: rgba(74, 144, 226, 0.2);
+  transform: scale(1.01);
+  border-color: #4A90E2;
+}
+
+.contact-icon {
+  font-size: 32px;
+}
+
+.contact-details {
+  flex: 1;
+}
+
+.contact-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.contact-number {
+  font-size: 24px;
+  font-weight: bold;
+  color: #4A90E2;
+  font-family: monospace;
+  margin-bottom: 4px;
+}
+
+.contact-extension {
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 4px;
+}
+
+.contact-description {
+  font-size: 11px;
+  color: #666;
+}
+
+.alternative-option {
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  margin-top: 16px;
+}
+
+.close-bottom {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 16px;
+  width: 100%;
+  cursor: pointer;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.close-bottom:hover {
+  color: white;
+}
+
+/* Scrollbar personalizado */
+.crisis-card::-webkit-scrollbar {
+  width: 4px;
+}
+
+.crisis-card::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.crisis-card::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* Resources Page */
+.resources-page {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px;
+  background: var(--bg-chat, #0f3460);
+}
+
+/* Header */
+.resources-header {
+  margin-bottom: 28px;
+}
+
+.resources-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.resources-subtitle {
+  font-size: 14px;
+  color: var(--text-gray, #a0a0a0);
+}
+
+/* Buscador */
+.search-container {
+  margin-bottom: 32px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s;
+}
+
+.search-box:focus-within {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #4A90E2;
+}
+
+.search-icon {
+  font-size: 18px;
+  margin-right: 12px;
+  color: var(--text-gray);
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-gray);
+}
+
+.search-clear {
+  background: none;
+  border: none;
+  color: var(--text-gray);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 8px;
+}
+
+/* Secciones */
+.resources-section {
+  margin-bottom: 40px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(74, 144, 226, 0.3);
+}
+
+.section-icon {
+  font-size: 24px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+/* Grid de recursos */
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.resource-card {
+  display: flex;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  transition: all 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.resource-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.resource-icon {
+  font-size: 32px;
+  width: 48px;
+  text-align: center;
+}
+
+.resource-info {
+  flex: 1;
+}
+
+.resource-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 6px;
+}
+
+.resource-description {
+  font-size: 12px;
+  color: var(--text-gray);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.resource-button {
+  background: rgba(74, 144, 226, 0.2);
+  border: none;
+  color: #4A90E2;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.resource-button:hover {
+  background: #4A90E2;
+  color: white;
+}
+
+/* Lista de recursos (artículos) */
+.resources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resource-list-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 14px 18px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.resource-list-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.list-item-icon {
+  font-size: 28px;
+  width: 44px;
+  text-align: center;
+}
+
+.list-item-info {
+  flex: 1;
+}
+
+.list-item-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.list-item-description {
+  font-size: 12px;
+  color: var(--text-gray);
+}
+
+.list-item-button {
+  background: transparent;
+  border: none;
+  color: #4A90E2;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: all 0.2s;
+}
+
+.list-item-button:hover {
+  background: rgba(74, 144, 226, 0.2);
+}
+
+/* Sección de ayuda (destacada) */
+.help-section {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.help-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  border-radius: 20px;
+  padding: 24px 28px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.help-card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.help-icon {
+  font-size: 48px;
+}
+
+.help-content {
+  flex: 1;
+}
+
+.help-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 6px;
+}
+
+.help-description {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 12px;
+}
+
+.help-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+}
+
+.help-number {
+  color: white;
+}
+
+.help-arrow {
+  font-size: 16px;
+}
+
+/* Scrollbar */
+.resources-page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.resources-page::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.resources-page::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
