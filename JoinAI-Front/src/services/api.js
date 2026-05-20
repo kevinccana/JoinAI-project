@@ -10,19 +10,44 @@ const api = axios.create({
   },
 });
 
-export const sendMessage = async (message) => {
+// Servidor frontend: api.js / chatService.js
+
+/**
+ * Envía el historial de la conversación al backend de FastAPI.
+ * @param {Array} chatHistory - Lista de mensajes previos [{role: "user", text: "..."}, {role: "model", text: "..."}]
+ * @param {string} newMessageText - El nuevo mensaje de texto que acaba de escribir el usuario.
+ */
+export const sendMessage = async (chatHistory, newMessageText) => {
   try {
-    const response = await api.post('/chat', { message });
-    return response.data;
+    // 1. Construimos el historial completo incluyendo el nuevo mensaje del usuario
+    const updatedHistory = [
+      ...chatHistory,
+      { role: "user", text: newMessageText }
+    ];
+
+    // 2. Apuntamos a la nueva ruta /chatai enviando el objeto 'history' requerido por FastAPI
+    const response = await api.post('/chatai', { 
+      history: updatedHistory 
+    });
+
+    // 3. Retornamos la respuesta del backend
+    // Tu backend devuelve {"respuesta": "texto..."}, lo adaptamos a la estructura de tu MVP
+    return {
+      response: response.data.respuesta,
+      crisis_detected: false // Puedes integrar esto con tu otra API de crisis si lo deseas
+    };
+
   } catch (error) {
     console.error('API Error:', error);
-    // Respuesta de respaldo si el backend no está disponible
+    
+    // Respuesta de respaldo en español (acorde a la personalidad del bot) si el backend falla
     return { 
-      response: "I'm here for you. Tell me more about how you're feeling.",
+      response: "Estoy aquí para ti. Cuéntame un poco más sobre cómo te estás sintiendo hoy.",
       crisis_detected: false 
     };
   }
 };
+
 
 export const checkHealth = async () => {
   try {

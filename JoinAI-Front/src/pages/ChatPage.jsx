@@ -31,23 +31,33 @@ function ChatPage() {
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
-
-    // Agregar mensaje del usuario
+  
+    // 1. Crear el nuevo mensaje del usuario con la estructura de tu UI
     const userMessage = {
       id: messages.length + 1,
       sender: 'user',
       text: inputValue,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
+  
+    // Actualizar la interfaz de inmediato para que el usuario vea su mensaje
     setMessages(prev => [...prev, userMessage]);
+    const currentInputValue = inputValue; // Guardamos el valor actual antes de borrarlo
     setInputValue('');
     setIsLoading(true);
-
+  
     try {
-      // Enviar al backend
-      const response = await sendMessage(inputValue);
+      // 2. FORMATEO CLAVE: Convertimos tus mensajes previos al formato de Gemini
+      // Mapeamos 'user' -> 'user' y 'bot' -> 'model'
+      const formattedHistory = messages.map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'model',
+        text: msg.text
+      }));
+  
+      // 3. Enviar al backend el historial formateado y el mensaje de texto actual
+      const response = await sendMessage(formattedHistory, currentInputValue);
       
-      // Verificar si es crisis
+      // Verificar si tu lógica previa detectó crisis
       if (response.crisis_detected) {
         setCrisisInfo({
           message: response.response,
@@ -60,19 +70,20 @@ function ChatPage() {
         setShowCrisisOverlay(true);
       }
       
-      // Agregar respuesta del bot
+      // 4. Agregar respuesta del bot a la interfaz
       const botMessage = {
-        id: messages.length + 2,
+        id: Date.now(), // Usar Date.now() evita problemas si hay renders muy rápidos
         sender: 'bot',
         text: response.response,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
+      
       setMessages(prev => [...prev, botMessage]);
       
     } catch (error) {
       console.error('Error al enviar mensaje:', error);
       const errorMessage = {
-        id: messages.length + 2,
+        id: Date.now() + 1,
         sender: 'bot',
         text: "Lo siento, estoy teniendo problemas técnicos. Por favor, intenta de nuevo más tarde.",
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -82,6 +93,7 @@ function ChatPage() {
       setIsLoading(false);
     }
   };
+  
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
