@@ -87,7 +87,8 @@ class ResourceManager:
     """Queries mental health resources by district keywords."""
 
     def __init__(self, source: ResourceSource | None = None) -> None:
-        self.source = source or JsonResourceSource("recursos_lima.json")
+        json_path = Path(__file__).parent / "recursos_lima.json"
+        self.source = source or JsonResourceSource(json_path)
         self._distritos: list[dict[str, Any]] = self.source.load_distritos()
 
     @classmethod
