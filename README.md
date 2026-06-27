@@ -320,7 +320,7 @@ La aplicación está diseñada para el contexto peruano. En caso de crisis se mu
 | Chat con Gemini | Funcional |
 | Clasificación de riesgo con BETO | Funcional |
 | Protocolo de crisis (CrisisOverlay) | Funcional |
-| Popup de video (nivel Moderado) | En desarrollo |
+| Popup de video (nivel Moderado) | Funcional |
 | Registro de ánimo | Interfaz lista, sin persistencia |
 | Recursos por distrito | Funcional (SJL, Comas, Lima Centro) |
 | Autenticación de usuarios | Pendiente |
