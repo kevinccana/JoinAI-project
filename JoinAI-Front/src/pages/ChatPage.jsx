@@ -16,6 +16,7 @@ function ChatPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showCrisisOverlay, setShowCrisisOverlay] = useState(false);
   const [crisisInfo, setCrisisInfo] = useState(null);
+  const [nivelRiesgo, setNivelRiesgo] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -57,7 +58,12 @@ function ChatPage() {
       // 3. Enviar al backend el historial formateado y el mensaje de texto actual
       const response = await sendMessage(formattedHistory, currentInputValue);
       
-      // Verificar si tu lógica previa detectó crisis
+      // Actualizar indicador de nivel de riesgo (BETO)
+      if (response.nivel_riesgo) {
+        setNivelRiesgo(response.nivel_riesgo);
+      }
+
+      // Activar CrisisOverlay si BETO detectó nivel crítico
       if (response.crisis_detected) {
         setCrisisInfo({
           message: response.response,
@@ -117,15 +123,27 @@ function ChatPage() {
   return (
     <>
       <div className="chat-container">
-        {/* Header con hora y botón SOS */}
+        {/* Header con hora, indicador de riesgo y botón SOS */}
         <div className="chat-header">
           <div className="chat-header-left">
             <div className="logo-small">🧠</div>
             <span className="session-info">sesión #001 - iniciada {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
-          <button className="sos-button" onClick={handleSOSClick}>
-            🆘 SOS
-          </button>
+          <div className="chat-header-right">
+            {nivelRiesgo && (
+              <div className={`risk-indicator risk-indicator--${nivelRiesgo}`}>
+                <span className="risk-dot" />
+                <span className="risk-label">
+                  {nivelRiesgo === 'control'  && 'Control'}
+                  {nivelRiesgo === 'moderado' && 'Moderado'}
+                  {nivelRiesgo === 'critico'  && 'Crítico'}
+                </span>
+              </div>
+            )}
+            <button className="sos-button" onClick={handleSOSClick}>
+              🆘 SOS
+            </button>
+          </div>
         </div>
 
         {/* Mensajes del chat */}

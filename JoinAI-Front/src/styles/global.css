@@ -136,6 +136,64 @@ body {
   color: var(--text-gray);
 }
 
+.chat-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Indicador de nivel de riesgo BETO */
+.risk-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: all 0.4s ease;
+}
+
+.risk-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite;
+}
+
+.risk-indicator--control {
+  background: rgba(76, 175, 80, 0.15);
+  color: #81c784;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+.risk-indicator--control .risk-dot {
+  background: #4caf50;
+}
+
+.risk-indicator--moderado {
+  background: rgba(255, 167, 38, 0.15);
+  color: #ffb74d;
+  border: 1px solid rgba(255, 167, 38, 0.3);
+}
+.risk-indicator--moderado .risk-dot {
+  background: #ffa726;
+}
+
+.risk-indicator--critico {
+  background: rgba(255, 68, 68, 0.15);
+  color: #ef5350;
+  border: 1px solid rgba(255, 68, 68, 0.3);
+}
+.risk-indicator--critico .risk-dot {
+  background: #ff4444;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+
 .sos-button {
   background: var(--danger-color);
   border: none;

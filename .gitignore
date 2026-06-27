@@ -1,0 +1,4 @@
+JoinAI-Back/.env
+JoinAI-Back/__pycache__/
+JoinAI-Back/**/__pycache__/
+*.pyc
