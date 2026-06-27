@@ -76,29 +76,75 @@ UMBRAL_CRITICO  = 0.30  # Bajo para maximizar recall en casos graves
 UMBRAL_MODERADO = 0.45
 
 # ── Catálogo de videos de apoyo ────────────────────────────────────────────────
-# Cada video corresponde a un tipo de intervención para nivel Moderado.
-# La selección se hace por palabras clave en el mensaje (ver _seleccionar_video).
+# La selección entre estos videos la hace Gemini según el contexto del mensaje
+# (ver seleccionar_video_con_gemini en app/routes/gemini.py).
+# El campo "situacion" describe cuándo es apropiado cada video — Gemini lo lee.
+#
+# NOTA: Los videos marcados con url "PENDIENTE" necesitan una URL real de YouTube.
 VIDEOS_AYUDA = [
     {
-        "tipo"       : "respiracion",
-        "titulo"     : "Ejercicio de Respiración 4-7-8",
+        "tipo"      : "respiracion",
+        "titulo"    : "Ejercicio de Respiración 4-7-8",
         "descripcion": "Técnica de respiración para calmar la ansiedad en minutos",
-        "url"        : "https://www.youtube.com/watch?v=EGO5m_DBzF8&t=96s",
-        "duracion"   : "5 min",
+        "url"       : "https://www.youtube.com/watch?v=EGO5m_DBzF8&t=96s",
+        "duracion"  : "5 min",
+        "situacion" : "ansiedad aguda, sensación de ahogo, falta de aire, taquicardia",
     },
     {
-        "tipo"       : "mindfulness",
-        "titulo"     : "Mindfulness para principiantes",
+        "tipo"      : "mindfulness",
+        "titulo"    : "Mindfulness para principiantes",
         "descripcion": "5 minutos de atención plena para reducir el estrés",
-        "url"        : "https://www.youtube.com/watch?v=3oCC4NDgYrY&t=17s",
-        "duracion"   : "5 min",
+        "url"       : "https://www.youtube.com/watch?v=3oCC4NDgYrY&t=17s",
+        "duracion"  : "5 min",
+        "situacion" : "estrés general, mente acelerada, pensamientos que no paran, preocupación",
     },
     {
-        "tipo"       : "relajacion",
-        "titulo"     : "Sonidos de la naturaleza",
-        "descripcion": "Ambientes relajantes para calmar la mente",
-        "url"        : "https://www.youtube.com/watch?v=7Ilu033ydSw",
-        "duracion"   : "Libre",
+        "tipo"      : "dormir",
+        "titulo"    : "Meditación para dormir",
+        "descripcion": "Relajación profunda para conciliar el sueño",
+        "url"       : "https://www.youtube.com/watch?v=vFrHhwCOaW0",
+        "duracion"  : "20 min",
+        "situacion" : "insomnio, dificultad para dormir, sueño, cansancio nocturno",
+    },
+    {
+        "tipo"      : "relajacion",
+        "titulo"    : "Sonidos de la naturaleza",
+        "descripcion": "Ambientes relajantes para calmar la mente y el cuerpo",
+        "url"       : "https://www.youtube.com/watch?v=7Ilu033ydSw",
+        "duracion"  : "Libre",
+        "situacion" : "tensión, agobio, saturación, necesidad de calma y silencio",
+    },
+    {
+        "tipo"      : "panico",
+        "titulo"    : "Técnica de Grounding 5-4-3-2-1",
+        "descripcion": "Ejercicio para salir de un ataque de pánico y volver al presente",
+        "url"       : "PENDIENTE",  # reemplazar con URL real de YouTube
+        "duracion"  : "7 min",
+        "situacion" : "ataque de pánico, crisis de ansiedad, disociación, temblores",
+    },
+    {
+        "tipo"      : "autoestima",
+        "titulo"    : "Meditación de autocompasión",
+        "descripcion": "Para momentos de tristeza, llanto y desánimo",
+        "url"       : "PENDIENTE",  # reemplazar con URL real de YouTube
+        "duracion"  : "10 min",
+        "situacion" : "tristeza, llanto, baja autoestima, desánimo, sentirse sin valor",
+    },
+    {
+        "tipo"      : "concentracion",
+        "titulo"    : "Música para concentrarse y calmar la mente",
+        "descripcion": "Sonidos para organizar los pensamientos cuando todo se siente abrumador",
+        "url"       : "https://open.spotify.com/embed/playlist/37i9dQZF1DX3Ogo9pFvBkY",
+        "duracion"  : "Libre",
+        "situacion" : "abrumado, mente en blanco, no puedo pensar, demasiadas cosas a la vez",
+    },
+    {
+        "tipo"      : "energia",
+        "titulo"    : "Yoga suave para el estrés",
+        "descripcion": "Movimiento suave para liberar la tensión acumulada en el cuerpo",
+        "url"       : "PENDIENTE",  # reemplazar con URL real de YouTube
+        "duracion"  : "15 min",
+        "situacion" : "agotamiento físico, tensión muscular, sin fuerzas, cuerpo tenso",
     },
 ]
 
@@ -153,26 +199,6 @@ def cargar_modelo() -> bool:
         logger.error(f"[BETO] Error al cargar el modelo: {exc}")
         _modelo_disponible = False
         return False
-
-
-def _seleccionar_video(texto: str) -> dict:
-    """
-    Elige el video de apoyo más relevante según el contenido del mensaje.
-
-    Prioridad:
-      1. Mención de dificultad respiratoria → video de respiración 4-7-8
-      2. Mención de sueño o agotamiento     → video de sonidos relajantes
-      3. Default                             → video de mindfulness
-    """
-    t = texto.lower()
-
-    if any(p in t for p in ["respir", "ahog", "asfixia", "aire", "falta el aire"]):
-        return VIDEOS_AYUDA[0]
-
-    if any(p in t for p in ["dormir", "duermo", "insomnio", "cansad", "agotad"]):
-        return VIDEOS_AYUDA[2]
-
-    return VIDEOS_AYUDA[1]
 
 
 def _fallback_keywords(texto: str) -> dict:
@@ -251,28 +277,18 @@ def clasificar_riesgo(texto: str) -> dict:
 
         # Crítico tiene prioridad para no ignorar casos graves
         if p_critico >= UMBRAL_CRITICO:
-            return {
-                "nivel"         : "critico",
-                "probabilidades": probabilidades,
-                "video_sugerido": None,
-            }
+            return {"nivel": "critico",  "probabilidades": probabilidades}
 
         if p_moderado >= UMBRAL_MODERADO:
-            return {
-                "nivel"         : "moderado",
-                "probabilidades": probabilidades,
-                "video_sugerido": _seleccionar_video(texto),
-            }
+            return {"nivel": "moderado", "probabilidades": probabilidades}
 
-        return {
-            "nivel"         : "control",
-            "probabilidades": probabilidades,
-            "video_sugerido": None,
-        }
+        return {"nivel": "control", "probabilidades": probabilidades}
 
     except Exception as exc:
         logger.error(f"[BETO] Error durante la inferencia: {exc}")
-        return _fallback_keywords(texto)
+        result = _fallback_keywords(texto)
+        result.pop("video_sugerido", None)
+        return result
 
 
 def detectar_crisis(texto: str) -> bool:

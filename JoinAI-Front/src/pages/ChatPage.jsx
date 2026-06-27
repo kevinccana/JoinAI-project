@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Message from '../components/Message';
 import CrisisOverlay from '../components/CrisisOverlay';
+import VideoPopup from '../components/VideoPopup';
 import { sendMessage } from '../services/api';
 
 function ChatPage() {
@@ -17,6 +18,8 @@ function ChatPage() {
   const [showCrisisOverlay, setShowCrisisOverlay] = useState(false);
   const [crisisInfo, setCrisisInfo] = useState(null);
   const [nivelRiesgo, setNivelRiesgo] = useState(null);
+  const [showVideoPopup, setShowVideoPopup] = useState(false);
+  const [videoSugerido, setVideoSugerido] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -61,6 +64,12 @@ function ChatPage() {
       // Actualizar indicador de nivel de riesgo (BETO)
       if (response.nivel_riesgo) {
         setNivelRiesgo(response.nivel_riesgo);
+      }
+
+      // Mostrar VideoPopup si BETO detectó nivel moderado
+      if (response.nivel_riesgo === 'moderado' && response.video_sugerido) {
+        setVideoSugerido(response.video_sugerido);
+        setShowVideoPopup(true);
       }
 
       // Activar CrisisOverlay si BETO detectó nivel crítico
@@ -182,9 +191,17 @@ function ChatPage() {
         </div>
       </div>
 
-      {/* Crisis Overlay */}
+      {/* Video Popup — nivel moderado */}
+      {showVideoPopup && (
+        <VideoPopup
+          video={videoSugerido}
+          onClose={() => setShowVideoPopup(false)}
+        />
+      )}
+
+      {/* Crisis Overlay — nivel crítico */}
       {showCrisisOverlay && (
-        <CrisisOverlay 
+        <CrisisOverlay
           info={crisisInfo}
           onClose={() => setShowCrisisOverlay(false)}
         />

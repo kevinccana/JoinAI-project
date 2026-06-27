@@ -23,7 +23,7 @@ load_dotenv()
 
 from google import genai
 from google.genai import types
-from app.services.nlp import clasificar_riesgo
+from app.services.nlp import clasificar_riesgo, VIDEOS_AYUDA
 
 # ── Router ─────────────────────────────────────────────────────────────────────
 router = APIRouter()
@@ -49,6 +49,43 @@ REGLAS CRÍTICAS:
    muestra empatía profunda y proporciona líneas de ayuda o números de emergencia de inmediato.
 """
 
+# ── Selección de video con Gemini ─────────────────────────────────────────────
+def seleccionar_video_con_gemini(texto: str, client) -> dict:
+    """
+    Usa Gemini para elegir el video más apropiado del catálogo según el mensaje.
+
+    Envía a Gemini el mensaje del usuario y la lista de videos con sus situaciones.
+    Gemini responde con el 'tipo' del video más adecuado (ej: "respiracion").
+    Si Gemini falla, retorna el video de mindfulness como fallback.
+    """
+    catalogo_str = "\n".join(
+        f"- tipo: {v['tipo']} | situacion: {v['situacion']}"
+        for v in VIDEOS_AYUDA
+    )
+
+    prompt = (
+        f"Un usuario escribió: \"{texto}\"\n\n"
+        f"Elige el tipo de video de apoyo más apropiado para su situación.\n"
+        f"Opciones disponibles:\n{catalogo_str}\n\n"
+        f"Responde ÚNICAMENTE con el valor del campo 'tipo', sin explicación. "
+        f"Ejemplo de respuesta válida: respiracion"
+    )
+
+    try:
+        respuesta = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(temperature=0.1),
+        )
+        tipo_elegido = respuesta.text.strip().lower().replace(".", "")
+
+        video = next((v for v in VIDEOS_AYUDA if v["tipo"] == tipo_elegido), None)
+        return video if video else VIDEOS_AYUDA[1]  # fallback: mindfulness
+
+    except Exception:
+        return VIDEOS_AYUDA[1]  # fallback: mindfulness
+
+
 # ── Endpoint ───────────────────────────────────────────────────────────────────
 @router.post("/chatai")
 async def chat_endpoint(request: ChatRequest):
@@ -69,25 +106,26 @@ async def chat_endpoint(request: ChatRequest):
       "moderado" → muestra la respuesta + VideoPopup con video_sugerido.
       "critico"  → muestra la respuesta + CrisisOverlay.
     """
-    try:
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            raise HTTPException(
-                status_code=500,
-                detail="Error de configuración: GEMINI_API_KEY no encontrada en el servidor.",
-            )
-
-        # ── 1. Clasificación de riesgo con BETO ───────────────────────────────
-        # Se toma el último mensaje con role "user" del historial.
-        ultimo_mensaje = next(
-            (msg.text for msg in reversed(request.history) if msg.role == "user"),
-            "",
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise HTTPException(
+            status_code=500,
+            detail="Error de configuración: GEMINI_API_KEY no encontrada en el servidor.",
         )
-        riesgo = clasificar_riesgo(ultimo_mensaje)
 
-        # ── 2. Respuesta de Gemini ─────────────────────────────────────────────
-        client = genai.Client(api_key=api_key)
+    # ── 1. BETO: clasificación de riesgo (siempre se ejecuta) ─────────────────
+    # Se ejecuta fuera del try/except de Gemini para que el nivel de riesgo
+    # siempre llegue al frontend, incluso si Gemini falla por rate limit (429).
+    ultimo_mensaje = next(
+        (msg.text for msg in reversed(request.history) if msg.role == "user"),
+        "",
+    )
+    riesgo = clasificar_riesgo(ultimo_mensaje)
 
+    # ── 2. Gemini: respuesta empática + selección de video ────────────────────
+    client = genai.Client(api_key=api_key)
+
+    try:
         contents = [
             types.Content(
                 role=msg.role,
@@ -106,14 +144,25 @@ async def chat_endpoint(request: ChatRequest):
             contents=contents,
             config=config,
         )
+        texto_respuesta = response.text
 
-        # ── 3. Respuesta unificada ─────────────────────────────────────────────
-        return {
-            "respuesta"     : response.text,
-            "nivel_riesgo"  : riesgo["nivel"],
-            "video_sugerido": riesgo["video_sugerido"],
-            "probabilidades": riesgo["probabilidades"],
-        }
+    except Exception:
+        # Si Gemini falla (429, timeout, etc.), se devuelve igual el nivel de BETO
+        # para que el frontend active CrisisOverlay o VideoPopup correctamente.
+        texto_respuesta = (
+            "Estoy aquí para ti. En este momento tengo dificultades técnicas, "
+            "pero lo más importante es que no estás solo/a."
+        )
 
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Error en Gemini API: {str(exc)}")
+    # ── 3. Selección de video con Gemini (solo si nivel moderado) ─────────────
+    video_sugerido = None
+    if riesgo["nivel"] == "moderado":
+        video_sugerido = seleccionar_video_con_gemini(ultimo_mensaje, client)
+
+    # ── 4. Respuesta unificada ────────────────────────────────────────────────
+    return {
+        "respuesta"     : texto_respuesta,
+        "nivel_riesgo"  : riesgo["nivel"],
+        "video_sugerido": video_sugerido,
+        "probabilidades": riesgo["probabilidades"],
+    }

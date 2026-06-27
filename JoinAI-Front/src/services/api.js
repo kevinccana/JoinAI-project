@@ -33,8 +33,9 @@ export const sendMessage = async (chatHistory, newMessageText) => {
     // 3. Retornamos la respuesta del backend
     // nivel_riesgo viene de BETO: "control" | "moderado" | "critico"
     return {
-      response: response.data.respuesta,
-      nivel_riesgo: response.data.nivel_riesgo,
+      response       : response.data.respuesta,
+      nivel_riesgo   : response.data.nivel_riesgo,
+      video_sugerido : response.data.video_sugerido,
       crisis_detected: response.data.nivel_riesgo === "critico",
     };
 
