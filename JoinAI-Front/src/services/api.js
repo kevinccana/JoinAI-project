@@ -31,10 +31,12 @@ export const sendMessage = async (chatHistory, newMessageText) => {
     });
 
     // 3. Retornamos la respuesta del backend
-    // Tu backend devuelve {"respuesta": "texto..."}, lo adaptamos a la estructura de tu MVP
+    // nivel_riesgo viene de BETO: "control" | "moderado" | "critico"
     return {
-      response: response.data.respuesta,
-      crisis_detected: false // Puedes integrar esto con tu otra API de crisis si lo deseas
+      response       : response.data.respuesta,
+      nivel_riesgo   : response.data.nivel_riesgo,
+      video_sugerido : response.data.video_sugerido,
+      crisis_detected: response.data.nivel_riesgo === "critico",
     };
 
   } catch (error) {
