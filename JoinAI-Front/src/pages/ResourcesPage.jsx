@@ -28,27 +28,6 @@ function ResourcesPage() {
     }
   ];
 
-  const articulosApoyo = [
-    {
-      id: 4,
-      titulo: "Cómo superar el pánico",
-      descripcion: "Estrategias para manejar ataques de ansiedad",
-      tipo: "articulo"
-    },
-    {
-      id: 5,
-      titulo: "Reminiscencia: entender el pasado",
-      descripcion: "Terapia para procesar emociones",
-      tipo: "articulo"
-    },
-    {
-      id: 6,
-      titulo: "Líneas de ayuda en Perú",
-      descripcion: "Contactos gratuitos de apoyo emocional",
-      tipo: "linea"
-    }
-  ];
-
   const ejerciciosRespiración = [
     {
       id: 7,
@@ -122,30 +101,6 @@ function ResourcesPage() {
                   Ver video →
                 </button>
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Sección: Artículos de Apoyo */}
-      <section className="resources-section">
-        <div className="section-header">
-          <span className="section-icon">📄</span>
-          <h3 className="section-title">Artículos de Apoyo</h3>
-        </div>
-        <div className="resources-list">
-          {filtrarPorBusqueda(articulosApoyo).map(articulo => (
-            <div key={articulo.id} className="resource-list-item">
-              <div className="list-item-icon">
-                {articulo.tipo === 'linea' ? '📞' : '📖'}
-              </div>
-              <div className="list-item-info">
-                <h4 className="list-item-title">{articulo.titulo}</h4>
-                <p className="list-item-description">{articulo.descripcion}</p>
-              </div>
-              <button className="list-item-button">
-                Leer más →
-              </button>
             </div>
           ))}
         </div>

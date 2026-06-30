@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ChatPage from './pages/ChatPage';
 import MoodLogPage from './pages/MoodLogPage';
 import ResourcesPage from './pages/ResourcesPage';
-import SettingsPage from './pages/SettingsPage';
 import './styles/global.css';
 
 function App() {
@@ -16,8 +15,6 @@ function App() {
         return <MoodLogPage />;
       case 'resources':
         return <ResourcesPage />;
-      case 'settings':
-        return <SettingsPage />;
       default:
         return <ChatPage />;
     }
@@ -39,7 +36,6 @@ function App() {
           >
             💬 Nuevo Chat
           </button>
-          <button className="menu-item disabled">📜 Historial</button>
           <button 
             className={`menu-item ${currentPage === 'mood' ? 'active' : ''}`}
             onClick={() => setCurrentPage('mood')}
@@ -51,12 +47,6 @@ function App() {
             onClick={() => setCurrentPage('resources')}
           >
             📍 Recursos
-          </button>
-          <button 
-            className={`menu-item ${currentPage === 'settings' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('settings')}
-          >
-            ⚙️ Ajustes
           </button>
         </nav>
       </div>
